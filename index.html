@@ -1,146 +1,819 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AURA CLOTHING</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f8f8f8;
-      color: #333;
-    }
-
-    header {
-      background-color: #111;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2.5em;
-      letter-spacing: 2px;
-    }
-
-    .intro {
-      padding: 20px;
-      text-align: center;
-      background-color: #fff;
-    }
-
-    .collection {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      padding: 20px;
-      background-color: #fff;
-    }
-
-    .item {
-      background-color: #f1f1f1;
-      border-radius: 8px;
-      overflow: hidden;
-      text-align: center;
-      padding-bottom: 10px;
-    }
-
-    .item img {
-      width: 100%;
-      height: auto;
-      object-fit: cover;
-    }
-
-    .item h3 {
-      margin: 10px 0 5px;
-    }
-
-    .item p {
-      font-weight: bold;
-      color: #444;
-    }
-
-    .buy-section {
-      padding: 30px;
-      text-align: center;
-      background-color: #eee;
-    }
-
-    .buy-section a {
-      display: inline-block;
-      background-color: #111;
-      color: white;
-      padding: 12px 25px;
-      text-decoration: none;
-      font-size: 16px;
-      border-radius: 5px;
-      margin-top: 10px;
-    }
-
-    footer {
-      text-align: center;
-      background-color: #111;
-      color: white;
-      padding: 15px;
-      font-size: 0.9em;
-    }
-
-    @media (max-width: 600px) {
-      .item img {
-        height: 200px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Al Hidayah - Attendance Management</title>
+    <!-- Load Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the golden theme and watermark */
+        :root {
+            --golden: #D9AE4A; /* A rich golden color */
+            --golden-light: #F7E9C7; /* Light golden for backgrounds */
+        }
+        .golden-text { color: var(--golden); }
+        .golden-bg { background-color: var(--golden); }
+        .golden-border { border-color: var(--golden); }
+        .watermark {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -10;
+            font-size: 8rem; /* Large text */
+            line-height: 1.5;
+            color: var(--golden);
+            opacity: 0.08; /* Very subtle */
+            overflow: hidden;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-content: space-around;
+            transform: rotate(-15deg); /* Slight rotation for effect */
+        }
+        .watermark-item {
+            padding: 0 4vw;
+            white-space: nowrap;
+        }
+        /* Style for the main container to ensure it sits above the watermark */
+        #app-container {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+        }
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--golden);
+            border-radius: 4px;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-white font-serif antialiased">
 
-  <header>
-    <h1>AURA CLOTHING</h1>
-  </header>
-
-  <section class="intro">
-    <p>Welcome to <strong>AURA CLOTHING</strong> — where fashion meets confidence and creativity.<br>
-    Explore our curated collection of modern styles below.</p>
-  </section>
-
-  <section class="collection">
-
-    <!-- Item Template -->
-    <div class="item">
-      <img src="insert-image-url-here" alt="Classic Streetwear Hoodie">
-      <h3>Classic Streetwear Hoodie</h3>
-      <p>$49.99</p>
+    <!-- Watermark Layer (Fixed Background) -->
+    <div class="watermark" aria-hidden="true">
+        <div class="watermark-item">Al Hidayah;</div>
+        <div class="watermark-item">Al Hidayah;</div>
+        <div class="watermark-item">Al Hidayah;</div>
+        <div class="watermark-item">Al Hidayah;</div>
+        <div class="watermark-item">Al Hidayah;</div>
+        <div class="watermark-item">Al Hidayah;</div>
+        <div class="watermark-item">Al Hidayah;</div>
+        <div class="watermark-item">Al Hidayah;</div>
+        <div class="watermark-item">Al Hidayah;</div>
     </div>
 
-    <div class="item">
-      <img src="insert-image-url-here" alt="Slim Fit Denim Jacket">
-      <h3>Slim Fit Denim Jacket</h3>
-      <p>$69.99</p>
+    <!-- Main Application Container -->
+    <div id="app-container" class="max-w-7xl mx-auto p-4 md:p-8">
+
+        <!-- Header and Navigation -->
+        <header class="mb-8 border-b-2 golden-border pb-4">
+            <h1 class="text-4xl font-bold golden-text text-center">Al Hidayah Institute</h1>
+            <p id="user-info" class="text-sm text-gray-500 text-center mt-1">Initializing...</p>
+            <nav class="mt-4 flex justify-center space-x-4">
+                <button onclick="navigate('dashboard')" class="nav-btn">Dashboard</button>
+                <button onclick="navigate('record')" class="nav-btn">Record Attendance</button>
+                <button onclick="navigate('view')" class="nav-btn">View Records</button>
+            </nav>
+        </header>
+
+        <!-- Main Content Area (Views are rendered here) -->
+        <main id="content" class="min-h-[60vh] p-4 bg-white rounded-xl shadow-lg border border-gray-100"></main>
+
+        <!-- Configuration Modal (Hidden by default) -->
+        <div id="config-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
+            <div class="bg-white p-6 rounded-xl shadow-2xl w-full max-w-lg">
+                <h2 class="text-2xl font-semibold golden-text mb-4">Manage Classes & Students</h2>
+                <div id="config-message" class="text-sm text-red-500 mb-4 hidden"></div>
+
+                <!-- Class Management -->
+                <div class="mb-4">
+                    <h3 class="text-xl font-medium text-gray-700 mb-2">Classes</h3>
+                    <div id="class-list" class="mb-3 space-y-2 max-h-40 overflow-y-auto p-2 border rounded">
+                        <!-- Classes will be loaded here -->
+                    </div>
+                    <div class="flex space-x-2">
+                        <input type="text" id="new-class-name" placeholder="New Class Name (e.g., Grade 7 A)"
+                               class="flex-grow p-2 border rounded-lg focus:ring-amber-500 focus:border-amber-500">
+                        <button onclick="addClass()" class="px-4 py-2 text-white golden-bg rounded-lg hover:opacity-90 transition duration-150">Add Class</button>
+                    </div>
+                </div>
+
+                <!-- Student Management -->
+                <div class="mb-6">
+                    <h3 class="text-xl font-medium text-gray-700 mb-2">Students</h3>
+                    <div class="mb-3">
+                        <label for="student-class-select" class="block text-sm font-medium text-gray-700">Select Class to Edit:</label>
+                        <select id="student-class-select" onchange="loadStudentsForConfig()"
+                                class="mt-1 block w-full p-2 border rounded-lg focus:ring-amber-500 focus:border-amber-500"></select>
+                    </div>
+                    <div id="student-list" class="mb-3 space-y-2 max-h-40 overflow-y-auto p-2 border rounded">
+                        <!-- Students will be loaded here -->
+                    </div>
+                    <div class="flex space-x-2">
+                        <input type="text" id="new-student-name" placeholder="New Student Name"
+                               class="flex-grow p-2 border rounded-lg focus:ring-amber-500 focus:border-amber-500">
+                        <button onclick="addStudent()" class="px-4 py-2 text-white golden-bg rounded-lg hover:opacity-90 transition duration-150" disabled id="add-student-btn">Add Student</button>
+                    </div>
+                </div>
+
+                <div class="flex justify-end">
+                    <button onclick="closeConfigModal()" class="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 transition duration-150">Done</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="item">
-      <img src="insert-image-url-here" alt="Oversized Graphic Tee">
-      <h3>Oversized Graphic Tee</h3>
-      <p>$29.99</p>
-    </div>
+    <!-- Firebase and Application Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, collection, setDoc, query, onSnapshot, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    <!-- Add more items here if needed -->
+        // Set Firebase logging level to Debug
+        setLogLevel('Debug');
 
-  </section>
+        // =========================================================================
+        // IMPORTANT: LOCAL/GITHUB CONFIGURATION INSTRUCTIONS
+        // =========================================================================
+        // When running this code outside of the Canvas environment (e.g., locally or on GitHub),
+        // the global variables (__firebase_config, __app_id, etc.) will be undefined.
+        // You MUST replace the placeholder values in YOUR_FIREBASE_CONFIG below
+        // with your own Firebase project credentials to make the backend work.
 
-  <section class="buy-section">
-    <h2>How to Buy</h2>
-    <p>Visit our store and check out your favorite styles easily.</p>
-    <a href="insert-your-store-url-here" target="_blank">Go to Online Store</a>
-    <p style="margin-top: 10px;">For help, email us at: <a href="mailto:support@auraclothing.com">support@auraclothing.com</a></p>
-  </section>
+        const YOUR_FIREBASE_CONFIG = {
+            apiKey: "YOUR_API_KEY_HERE",
+            authDomain: "YOUR_AUTH_DOMAIN_HERE",
+            projectId: "YOUR_PROJECT_ID_HERE",
+            storageBucket: "YOUR_STORAGE_BUCKET_HERE",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID_HERE",
+            appId: "YOUR_APP_ID_HERE" // Your App ID
+        };
 
-  <footer>
-    <p>&copy; 2025 AURA CLOTHING. Stay stylish. Stay bold.</p>
-  </footer>
+        // If the Canvas globals are available, use them. Otherwise, use the user's hardcoded config.
+        const appId = typeof __app_id !== 'undefined' ? __app_id : YOUR_FIREBASE_CONFIG.projectId;
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : YOUR_FIREBASE_CONFIG;
+        // The __initial_auth_token is removed, as we will use standard anonymous sign-in now.
+        // =========================================================================
 
+        let db;
+        let auth;
+        let userId = null;
+        let isAuthReady = false;
+
+        // --- Application State ---
+        let state = {
+            currentView: 'dashboard',
+            classes: [], // Array of { id, name }
+            studentsByClass: {}, // { classId: [{ id, name, classId }, ...] }
+            attendanceRecords: [], // Array of { classId, date, students: { studentId: 'P'/'A' } }
+            selectedClassId: null,
+            selectedDate: new Date().toISOString().slice(0, 10), // YYYY-MM-DD
+            error: null,
+        };
+
+        // --- Utility Functions ---
+
+        /** Constructs the Firestore private collection path for the current user/app. */
+        const getUserCollectionPath = (collectionName) => {
+            if (!userId) {
+                console.error("User ID is not set. Cannot form collection path.");
+                return null;
+            }
+            // Use the projectId as the appId fallback for the collection path
+            const currentAppId = typeof __app_id !== 'undefined' ? __app_id : YOUR_FIREBASE_CONFIG.projectId;
+            return `/artifacts/${currentAppId}/users/${userId}/${collectionName}`;
+        };
+
+        /** Displays temporary message in a UI element. */
+        const displayMessage = (id, msg, isError = true) => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.textContent = msg;
+                el.classList.remove('hidden', 'text-green-500', 'text-red-500');
+                el.classList.add(isError ? 'text-red-500' : 'text-green-500');
+                setTimeout(() => el.classList.add('hidden'), 5000);
+            }
+        };
+
+        // --- Firebase Initialization and Authentication ---
+
+        const initializeFirebase = async () => {
+            // Check if the user has updated the placeholder config when running outside Canvas
+            if (typeof __firebase_config === 'undefined' && firebaseConfig.apiKey === "YOUR_API_KEY_HERE") {
+                const configError = "Error: Please update 'YOUR_FIREBASE_CONFIG' in the script with your Firebase project credentials to enable the backend.";
+                console.error(configError);
+                document.getElementById('content').innerHTML = `<div class="text-center p-10 bg-red-100 text-red-700 rounded-lg">
+                    <p class="text-xl font-bold mb-4">Configuration Required</p>
+                    <p class="text-base">${configError}</p>
+                    <p class="mt-4">Set up a Firebase project, get your Web App Config, and replace the placeholder values above.</p>
+                </div>`;
+                displayMessage('user-info', configError, true);
+                return;
+            }
+
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+            } catch (e) {
+                 const initError = `Firebase Initialization Failed: ${e.message}`;
+                 console.error(initError, e);
+                 document.getElementById('user-info').textContent = initError;
+                 return;
+            }
+
+
+            // Authentication Listener
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    userId = user.uid;
+                    document.getElementById('user-info').textContent = `User ID: ${userId.substring(0, 8)}... (Authenticated)`;
+                } else {
+                    // Force Anonymous Sign-In to establish a userId for Firestore security rules
+                    document.getElementById('user-info').textContent = `Attempting Anonymous Sign-In...`;
+                    try {
+                        const anonUserCredential = await signInAnonymously(auth);
+                        userId = anonUserCredential.user.uid;
+                        document.getElementById('user-info').textContent = `User ID: ${userId.substring(0, 8)}... (Anonymous)`;
+                    } catch (e) {
+                        console.error("Anonymous sign-in failed. Cannot access Firestore.", e);
+                        document.getElementById('user-info').textContent = `Authentication Failed! Cannot Save Data.`;
+                        userId = crypto.randomUUID(); // Use a fallback ID but data won't persist to Firestore
+                        isAuthReady = true;
+                        renderView();
+                        return; // Stop initialization if sign-in fails critically
+                    }
+                }
+
+                isAuthReady = true;
+                setupFirestoreListeners();
+                renderView(); // Initial render once ready
+            });
+        };
+
+        // --- Firestore Realtime Listeners (Class & Student Data) ---
+
+        const setupFirestoreListeners = () => {
+            if (!db || !userId) {
+                return;
+            }
+
+            // 1. Listen for Classes
+            const classesQuery = query(collection(db, getUserCollectionPath('classes')));
+            onSnapshot(classesQuery, (snapshot) => {
+                state.classes = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                // Set default selected class if none is selected
+                if (!state.selectedClassId && state.classes.length > 0) {
+                    state.selectedClassId = state.classes[0].id;
+                } else if (state.classes.length === 0) {
+                    state.selectedClassId = null;
+                }
+                renderView();
+                loadClassesForSelects();
+                loadStudentsForConfig(); // Refresh config modal
+            }, (error) => {
+                console.error("Error listening to classes:", error);
+                state.error = "Failed to load classes.";
+                renderView();
+            });
+
+            // 2. Listen for Students (Structured by Class ID)
+            state.classes.forEach(cls => {
+                const studentsQuery = query(collection(db, getUserCollectionPath(`classes/${cls.id}/students`)));
+                onSnapshot(studentsQuery, (snapshot) => {
+                    state.studentsByClass[cls.id] = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    })).sort((a, b) => a.name.localeCompare(b.name));
+                    renderView();
+                    loadStudentsForConfig(); // Refresh config modal
+                }, (error) => {
+                    console.error(`Error listening to students for class ${cls.id}:`, error);
+                    state.error = "Failed to load student data.";
+                    renderView();
+                });
+            });
+
+            // 3. Listen for Attendance Records (General collection)
+            const attendanceQuery = query(collection(db, getUserCollectionPath('attendance')));
+            onSnapshot(attendanceQuery, (snapshot) => {
+                state.attendanceRecords = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                renderView();
+            }, (error) => {
+                console.error("Error listening to attendance:", error);
+                state.error = "Failed to load attendance records.";
+                renderView();
+            });
+        };
+
+        // --- CRUD Operations for Configuration ---
+
+        window.addClass = async () => {
+            const name = document.getElementById('new-class-name').value.trim();
+            if (!name) {
+                displayMessage('config-message', 'Class name cannot be empty.');
+                return;
+            }
+            try {
+                const newDocRef = doc(collection(db, getUserCollectionPath('classes')));
+                await setDoc(newDocRef, { name, createdAt: new Date() });
+                document.getElementById('new-class-name').value = '';
+                displayMessage('config-message', `Class "${name}" added successfully!`, false);
+            } catch (e) {
+                console.error("Error adding class:", e);
+                displayMessage('config-message', 'Failed to add class.');
+            }
+        };
+
+        window.deleteClass = async (classId) => {
+            // Replaced window.confirm with a custom modal/message box is the ideal approach,
+            // but for a quick fix, let's keep the core function logic clean.
+            if (!confirm('Are you sure you want to delete this class? This will also delete all associated students and attendance records.')) return;
+            try {
+                // Deleting the main class document
+                await deleteDoc(doc(db, getUserCollectionPath('classes'), classId));
+
+                // Note: Firestore does not automatically cascade delete subcollections.
+                // We'll primarily focus on deleting the main document, which removes it from the UI.
+
+                displayMessage('config-message', 'Class deleted (associated data may remain).', false);
+            } catch (e) {
+                console.error("Error deleting class:", e);
+                displayMessage('config-message', 'Failed to delete class.');
+            }
+        };
+
+        window.addStudent = async () => {
+            const classId = document.getElementById('student-class-select').value;
+            const name = document.getElementById('new-student-name').value.trim();
+            if (!classId || !name) {
+                displayMessage('config-message', 'Must select a class and provide a student name.');
+                return;
+            }
+            try {
+                const newDocRef = doc(collection(db, getUserCollectionPath(`classes/${classId}/students`)));
+                await setDoc(newDocRef, { name, classId, createdAt: new Date() });
+                document.getElementById('new-student-name').value = '';
+                displayMessage('config-message', `Student "${name}" added successfully!`, false);
+            } catch (e) {
+                console.error("Error adding student:", e);
+                displayMessage('config-message', 'Failed to add student.');
+            }
+        };
+
+        window.deleteStudent = async (classId, studentId) => {
+            // Replaced window.confirm with a custom modal/message box is the ideal approach,
+            // but for a quick fix, let's keep the core function logic clean.
+            if (!confirm('Are you sure you want to delete this student?')) return;
+            try {
+                await deleteDoc(doc(db, getUserCollectionPath(`classes/${classId}/students`), studentId));
+                displayMessage('config-message', 'Student deleted.', false);
+            } catch (e) {
+                console.error("Error deleting student:", e);
+                displayMessage('config-message', 'Failed to delete student.');
+            }
+        };
+
+        // --- Configuration Modal Functions ---
+
+        const loadClassesForConfig = () => {
+            const listEl = document.getElementById('class-list');
+            const selectEl = document.getElementById('student-class-select');
+            listEl.innerHTML = '';
+            selectEl.innerHTML = '<option value="">-- Select a Class --</option>';
+
+            const classMap = {};
+            state.classes.forEach(cls => {
+                classMap[cls.id] = cls.name;
+                listEl.innerHTML += `
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                        <span class="text-gray-800">${cls.name}</span>
+                        <button onclick="deleteClass('${cls.id}')" class="text-red-500 hover:text-red-700 text-sm font-bold">Delete</button>
+                    </div>
+                `;
+                selectEl.innerHTML += `<option value="${cls.id}">${cls.name}</option>`;
+            });
+
+            // Update state.studentsByClass keys if any class was deleted (handled by listener)
+
+            // Auto-select the first class in the student select
+            if (state.classes.length > 0) {
+                selectEl.value = state.selectedClassId || state.classes[0].id;
+            }
+            loadStudentsForConfig();
+        };
+
+        window.loadStudentsForConfig = () => {
+            const classId = document.getElementById('student-class-select').value;
+            const listEl = document.getElementById('student-list');
+            const addBtn = document.getElementById('add-student-btn');
+            listEl.innerHTML = '<p class="text-gray-400 text-sm">Select a class above to manage students.</p>';
+            addBtn.disabled = true;
+
+            if (classId && state.studentsByClass[classId]) {
+                addBtn.disabled = false;
+                listEl.innerHTML = '';
+                state.studentsByClass[classId].forEach(student => {
+                    listEl.innerHTML += `
+                        <div class="flex justify-between items-center bg-gray-50 p-2 rounded">
+                            <span class="text-gray-800">${student.name}</span>
+                            <button onclick="deleteStudent('${classId}', '${student.id}')" class="text-red-500 hover:text-red-700 text-sm font-bold">Delete</button>
+                        </div>
+                    `;
+                });
+                if (state.studentsByClass[classId].length === 0) {
+                    listEl.innerHTML = '<p class="text-gray-400 text-sm">No students yet. Add one above.</p>';
+                }
+            }
+        };
+
+        window.openConfigModal = () => {
+            document.getElementById('config-modal').classList.remove('hidden');
+            document.getElementById('config-modal').classList.add('flex');
+            loadClassesForConfig();
+        };
+
+        window.closeConfigModal = () => {
+            document.getElementById('config-modal').classList.add('hidden');
+            document.getElementById('config-modal').classList.remove('flex');
+        };
+
+        // --- Navigation and Main Rendering ---
+
+        window.navigate = (view) => {
+            state.currentView = view;
+            renderView();
+        };
+
+        const loadClassesForSelects = () => {
+            const selectors = document.querySelectorAll('.class-select');
+            selectors.forEach(selectEl => {
+                const previousValue = selectEl.value;
+                selectEl.innerHTML = '';
+                if (state.classes.length === 0) {
+                    selectEl.innerHTML = '<option value="">No Classes Found</option>';
+                    selectEl.disabled = true;
+                } else {
+                    selectEl.disabled = false;
+                    state.classes.forEach(cls => {
+                        selectEl.innerHTML += `<option value="${cls.id}">${cls.name}</option>`;
+                    });
+
+                    // Restore selection or default to the first
+                    if (previousValue && state.classes.some(cls => cls.id === previousValue)) {
+                        selectEl.value = previousValue;
+                        state.selectedClassId = previousValue;
+                    } else {
+                        selectEl.value = state.classes[0].id;
+                        state.selectedClassId = state.classes[0].id;
+                    }
+                }
+            });
+            // Force update on Record and View attendance screens if selection changed
+            if (state.currentView === 'record' || state.currentView === 'view') {
+                renderView();
+            }
+        };
+
+        const renderView = () => {
+            const contentEl = document.getElementById('content');
+            if (!isAuthReady) {
+                contentEl.innerHTML = `<div class="text-center p-10 text-gray-500">Loading authentication and data...</div>`;
+                return;
+            }
+
+            // Clear previous error
+            state.error = null;
+
+            if (state.classes.length === 0) {
+                contentEl.innerHTML = `
+                    <div class="text-center p-10">
+                        <p class="text-xl font-semibold mb-4 text-gray-700">Welcome to Al Hidayah Attendance Management!</p>
+                        <p class="text-gray-600 mb-6">It looks like you haven't set up any classes yet. Please configure your institution.</p>
+                        <button onclick="openConfigModal()" class="px-6 py-3 text-white golden-bg rounded-lg text-lg font-bold shadow-md hover:opacity-90 transition duration-150">
+                            Start Configuration
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            switch (state.currentView) {
+                case 'record':
+                    renderRecordAttendance();
+                    break;
+                case 'view':
+                    renderViewRecords();
+                    break;
+                case 'dashboard':
+                default:
+                    renderDashboard();
+            }
+
+            if (state.error) {
+                contentEl.innerHTML += `<div class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">${state.error}</div>`;
+            }
+        };
+
+        // --- Render Functions for Each Page ---
+
+        const renderDashboard = () => {
+            const contentEl = document.getElementById('content');
+            const classCount = state.classes.length;
+            const studentCount = Object.values(state.studentsByClass).flat().length;
+
+            contentEl.innerHTML = `
+                <div class="p-8">
+                    <h2 class="text-3xl font-bold golden-text mb-6">Dashboard Summary</h2>
+                    <div class="grid md:grid-cols-2 gap-6 mb-8">
+                        <div class="p-6 bg-yellow-50 rounded-xl shadow-inner border-l-4 golden-border">
+                            <p class="text-5xl font-extrabold golden-text">${classCount}</p>
+                            <p class="text-lg text-gray-600 mt-2">Total Classes Registered</p>
+                        </div>
+                        <div class="p-6 bg-yellow-50 rounded-xl shadow-inner border-l-4 golden-border">
+                            <p class="text-5xl font-extrabold golden-text">${studentCount}</p>
+                            <p class="text-lg text-gray-600 mt-2">Total Students Across All Classes</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-6 rounded-xl shadow-md">
+                        <h3 class="text-2xl font-semibold text-gray-700 mb-4">Quick Actions</h3>
+                        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                            <button onclick="navigate('record')" class="flex-1 px-4 py-3 text-white golden-bg rounded-lg font-semibold hover:opacity-90 transition duration-150 shadow-lg">
+                                Start Today's Attendance
+                            </button>
+                            <button onclick="navigate('view')" class="flex-1 px-4 py-3 golden-text bg-white border golden-border rounded-lg font-semibold hover:bg-yellow-50 transition duration-150 shadow-lg">
+                                Review Past Records
+                            </button>
+                            <button onclick="openConfigModal()" class="flex-1 px-4 py-3 text-gray-700 bg-gray-200 rounded-lg font-semibold hover:bg-gray-300 transition duration-150 shadow-lg">
+                                Manage Configuration
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        };
+
+        const renderRecordAttendance = () => {
+            const contentEl = document.getElementById('content');
+            const selectedClass = state.classes.find(c => c.id === state.selectedClassId);
+            const students = selectedClass ? state.studentsByClass[selectedClass.id] || [] : [];
+            const currentDate = state.selectedDate;
+
+            // Find existing record for this date/class
+            const existingRecord = state.attendanceRecords.find(r => r.classId === state.selectedClassId && r.date === currentDate);
+            const initialAttendance = existingRecord ? existingRecord.students : {};
+
+            // Initialize currentAttendanceData based on existing record for the session
+            currentAttendanceData = { ...initialAttendance };
+
+
+            contentEl.innerHTML = `
+                <div class="p-4">
+                    <h2 class="text-3xl font-bold golden-text mb-6">Record Attendance</h2>
+
+                    <div class="flex flex-wrap items-center justify-between gap-4 p-4 mb-6 border golden-border rounded-lg bg-yellow-50">
+                        <div class="flex items-center space-x-4">
+                            <label for="record-class-select" class="font-medium text-gray-700">Class:</label>
+                            <select id="record-class-select" class="class-select p-2 border rounded-lg" onchange="state.selectedClassId = this.value; renderRecordAttendance();">
+                                <!-- Options populated by loadClassesForSelects -->
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <label for="record-date" class="font-medium text-gray-700">Date:</label>
+                            <input type="date" id="record-date" value="${currentDate}" class="p-2 border rounded-lg" onchange="state.selectedDate = this.value; renderRecordAttendance();">
+                        </div>
+                    </div>
+
+                    ${!selectedClass ? '<p class="text-center text-red-500">Please select a class.</p>' :
+                      students.length === 0 ? '<p class="text-center text-gray-500">No students found for this class. Please add students via the Configuration panel.</p>' :
+                    `
+                    <div id="record-message" class="p-3 bg-green-100 text-green-700 rounded hidden mb-4"></div>
+                    <table class="min-w-full divide-y divide-gray-200 shadow-md rounded-lg overflow-hidden">
+                        <thead class="golden-bg text-white">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Student Name</th>
+                                <th class="px-6 py-3 text-center text-xs font-bold uppercase tracking-wider">Attendance</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-list" class="bg-white divide-y divide-gray-200">
+                            ${students.map(student => `
+                                <tr class="hover:bg-yellow-50 transition duration-100">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${student.name}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm text-gray-500">
+                                        <div class="flex justify-center space-x-4">
+                                            <button
+                                                data-student-id="${student.id}"
+                                                data-status="P"
+                                                class="attendance-btn px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200
+                                                ${initialAttendance[student.id] === 'P' ? 'bg-green-500 text-white shadow-md' : 'bg-green-100 text-green-700 hover:bg-green-200'}"
+                                            >Present</button>
+                                            <button
+                                                data-student-id="${student.id}"
+                                                data-status="A"
+                                                class="attendance-btn px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200
+                                                ${initialAttendance[student.id] === 'A' ? 'bg-red-500 text-white shadow-md' : 'bg-red-100 text-red-700 hover:bg-red-200'}"
+                                            >Absent</button>
+                                            <button
+                                                data-student-id="${student.id}"
+                                                data-status="L"
+                                                class="attendance-btn px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200
+                                                ${initialAttendance[student.id] === 'L' ? 'bg-blue-500 text-white shadow-md' : 'bg-blue-100 text-blue-700 hover:bg-blue-200'}"
+                                            >Late</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div class="mt-6 text-right">
+                        <button onclick="saveAttendance('${existingRecord ? existingRecord.id : null}')" class="px-6 py-3 text-lg font-bold text-white golden-bg rounded-lg shadow-xl hover:opacity-90 transition duration-150">
+                            Save Attendance
+                        </button>
+                    </div>
+                    `
+                    }
+                </div>
+            `;
+            // Attach event listeners after rendering
+            document.querySelectorAll('.attendance-btn').forEach(button => {
+                button.addEventListener('click', handleAttendanceClick);
+            });
+            // Ensure the class selector is updated with the current selection
+            const recordSelect = document.getElementById('record-class-select');
+            if (recordSelect) {
+                 recordSelect.value = state.selectedClassId;
+            }
+        };
+
+        let currentAttendanceData = {}; // Stores the latest attendance data for the current view
+
+        const handleAttendanceClick = (event) => {
+            const button = event.currentTarget;
+            const studentId = button.getAttribute('data-student-id');
+            const status = button.getAttribute('data-status');
+
+            // 1. Update the local attendance object
+            currentAttendanceData[studentId] = status;
+
+            // 2. Visually update the buttons for this student
+            const studentRow = button.closest('tr');
+            studentRow.querySelectorAll('.attendance-btn').forEach(btn => {
+                const btnStatus = btn.getAttribute('data-status');
+                // Reset all states
+                btn.classList.remove('bg-green-500', 'bg-red-500', 'bg-blue-500', 'text-white', 'shadow-md');
+
+                // Re-apply default inactive styles based on status type
+                if (btnStatus === 'P') {
+                    btn.classList.add('bg-green-100', 'text-green-700', 'hover:bg-green-200');
+                } else if (btnStatus === 'A') {
+                    btn.classList.add('bg-red-100', 'text-red-700', 'hover:bg-red-200');
+                } else if (btnStatus === 'L') {
+                    btn.classList.add('bg-blue-100', 'text-blue-700', 'hover:bg-blue-200');
+                }
+            });
+
+            // Apply selected style only to the clicked button
+            if (status === 'P') {
+                button.classList.add('bg-green-500', 'text-white', 'shadow-md');
+                button.classList.remove('bg-green-100', 'text-green-700', 'hover:bg-green-200');
+            } else if (status === 'A') {
+                button.classList.add('bg-red-500', 'text-white', 'shadow-md');
+                button.classList.remove('bg-red-100', 'text-red-700', 'hover:bg-red-200');
+            } else if (status === 'L') {
+                button.classList.add('bg-blue-500', 'text-white', 'shadow-md');
+                button.classList.remove('bg-blue-100', 'text-blue-700', 'hover:bg-blue-200');
+            }
+        };
+
+        window.saveAttendance = async (existingDocId) => {
+            const classId = state.selectedClassId;
+            const date = state.selectedDate;
+
+            if (!classId || !date) {
+                displayMessage('record-message', 'Class and Date must be selected.', true);
+                return;
+            }
+
+            const studentsInClass = state.studentsByClass[classId] || [];
+            const attendanceDataToSave = {};
+
+            // Collect data from the local currentAttendanceData
+            studentsInClass.forEach(student => {
+                // Default to Absent if attendance was never clicked for a student
+                attendanceDataToSave[student.id] = currentAttendanceData[student.id] || 'A';
+            });
+
+            const data = {
+                classId: classId,
+                date: date,
+                students: attendanceDataToSave
+            };
+
+            try {
+                if (existingDocId) {
+                    // Update existing record
+                    const docRef = doc(db, getUserCollectionPath('attendance'), existingDocId);
+                    await updateDoc(docRef, data);
+                    displayMessage('record-message', 'Attendance updated successfully!', false);
+                } else {
+                    // Create new record
+                    const newDocRef = doc(collection(db, getUserCollectionPath('attendance')));
+                    await setDoc(newDocRef, data);
+                    displayMessage('record-message', 'Attendance saved successfully!', false);
+                }
+            } catch (e) {
+                console.error("Error saving attendance:", e);
+                displayMessage('record-message', 'Failed to save attendance.', true);
+            }
+        };
+
+        const renderViewRecords = () => {
+            const contentEl = document.getElementById('content');
+            const classId = state.selectedClassId;
+            const selectedClass = state.classes.find(c => c.id === classId);
+            const students = selectedClass ? state.studentsByClass[classId] || [] : [];
+            const attendanceByClass = state.attendanceRecords
+                .filter(r => r.classId === classId)
+                .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date descending
+
+            contentEl.innerHTML = `
+                <div class="p-4">
+                    <h2 class="text-3xl font-bold golden-text mb-6">View Attendance Records</h2>
+
+                    <div class="flex items-center space-x-4 p-4 mb-6 border golden-border rounded-lg bg-yellow-50 max-w-sm">
+                        <label for="view-class-select" class="font-medium text-gray-700">Class:</label>
+                        <select id="view-class-select" class="class-select p-2 border rounded-lg" onchange="state.selectedClassId = this.value; renderViewRecords();">
+                            <!-- Options populated by loadClassesForSelects -->
+                        </select>
+                    </div>
+
+                    ${!selectedClass ? '<p class="text-center text-red-500">Please select a class.</p>' :
+                      students.length === 0 ? '<p class="text-center text-gray-500">No students to track for this class.</p>' :
+                      attendanceByClass.length === 0 ? '<p class="text-center text-gray-500">No attendance records found for this class.</p>' :
+                    `
+                    <div class="overflow-x-auto shadow-md rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="golden-bg text-white sticky top-0">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider min-w-[150px]">Student Name</th>
+                                    ${attendanceByClass.map(record => `<th class="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider min-w-[100px]">${record.date}</th>`).join('')}
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                ${students.map(student => `
+                                    <tr class="hover:bg-yellow-50 transition duration-100">
+                                        <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">${student.name}</td>
+                                        ${attendanceByClass.map(record => {
+                                            const status = record.students[student.id] || 'N/A';
+                                            let badgeClass = 'bg-gray-200 text-gray-800';
+                                            if (status === 'P') badgeClass = 'bg-green-100 text-green-700';
+                                            if (status === 'A') badgeClass = 'bg-red-100 text-red-700';
+                                            if (status === 'L') badgeClass = 'bg-blue-100 text-blue-700';
+
+                                            return `<td class="px-4 py-3 whitespace-nowrap text-center text-sm">
+                                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${badgeClass}">
+                                                            ${status}
+                                                        </span>
+                                                    </td>`;
+                                        }).join('')}
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    `
+                    }
+                </div>
+            `;
+            // Ensure the class selector is updated with the current selection
+            const viewSelect = document.getElementById('view-class-select');
+            if (viewSelect) {
+                viewSelect.value = classId;
+            }
+        };
+
+        // --- Initial Load ---
+        initializeFirebase();
+
+    </script>
 </body>
 </html>
